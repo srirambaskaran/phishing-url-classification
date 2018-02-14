@@ -33,6 +33,10 @@ I have cleaned the `.arff` file to a txt format for easy processing in python.
 
 The algorithm has been coded in Python 2. Dependencies are common ML packages such as `numpy` and `sklearn`.
 
+## Implementation
+
+The model is learnt using Naive Bayes approach considering all features. Since we do not have an exhaustive set of values for each feature, the training phase is not considering smoothing of values. The model is stored as a json file using the internal json tool.
+
 ## Running the code
 
 You can run the code using the following command.
@@ -50,3 +54,13 @@ python phishing.py [option] [value]
 
 - % train-test split for `random`
 - number of folds for `cv`
+
+## Results
+
+The accuracy on `random` split is **90.2%**. The average accuracy on `cv` over 5 folds is **90.7%**. We can see the approach works 90% of the time.
+
+## Future work
+
+- More analysis on the dataset and features needs to be done to improve on accuracy.
+- Comparison with state of the art approaches.
+- Will feature selection help?
