@@ -1,4 +1,5 @@
 import sys
+import json
 import numpy as np
 import math
 from collections import defaultdict
@@ -8,7 +9,7 @@ from sklearn.model_selection import KFold
 # Uses Naive Bayes method.
 
 def read_data(filename):
-    data = np.array(map(lambda x: x.split(","), open(filename).readlines()[1:]))
+    data = np.array(map(lambda x: x.strip().split(","), open(filename).readlines()[1:]))
     return data
 
 def split_train_test(data, ratio_train=0.8):
@@ -65,6 +66,10 @@ def predict(X_test, y_test, class_prob, class_feature_value_count):
 	
 	return accuracy
 
+def store(class_prob, class_feature_value_count):
+	print "Storing model"
+	model = {"class_prob":class_prob, "class_feature_value_count": class_feature_value_count}
+	json.dump(model, open("model.txt","w"))
 
 print "Phishing URL predictor - Naive Bayes approach"
 
@@ -82,6 +87,7 @@ if option == "random":
 	data = read_data(training_file)
 	X_train, y_train, X_test, y_test = split_train_test(data, split)
 	class_prob, class_feature_value_count = train(X_train, y_train)
+	store(class_prob, class_feature_value_count)
 	accuracy = predict(X_test, y_test, class_prob, class_feature_value_count)
 	print "\n"
 	print "\n"
