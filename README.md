@@ -42,7 +42,7 @@ The model is learnt using Naive Bayes approach considering all features. Since w
 You can run the code using the following command.
 
 ```
-python phishing.py [option] [value]
+python phishing.py training_file [option] [value]
 ```
 
 `option` - Represents how to calculate accuracy, different values are
