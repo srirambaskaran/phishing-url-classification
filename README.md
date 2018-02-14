@@ -27,7 +27,7 @@ I have considered the following dataset published in 2015 which is available for
 
 Dataset: [https://archive.ics.uci.edu/ml/datasets/phishing+websites](https://archive.ics.uci.edu/ml/datasets/phishing+websites)
 
-I have cleaned the `.arff` file to a txt format for easy processing in python.
+I have cleaned the `.arff` file to a `.txt` format for easy processing in python.
 
 ## Environment
 
