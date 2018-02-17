@@ -12,6 +12,10 @@ def read_data(filename):
     data = np.array(map(lambda x: x.strip().split(","), open(filename).readlines()[1:]))
     return data
 
+def filter_features(data, features_index):
+	return data[:,features_index]
+
+
 def split_train_test(data, ratio_train=0.8):
 	np.random.shuffle(data)
 	X = data[:,:-1]
@@ -71,51 +75,51 @@ def store(class_prob, class_feature_value_count):
 	model = {"class_prob":class_prob, "class_feature_value_count": class_feature_value_count}
 	json.dump(model, open("model.txt","w"))
 
-print "Phishing URL predictor - Naive Bayes approach"
 
-training_file = sys.argv[1]
-option = "random"
-if len(sys.argv) > 2:
-	option = sys.argv[2]
+def main(argv):
+	print "Phishing URL predictor - Naive Bayes approach"
+	training_file = argv[1]
+	option = "random"
+	if len(argv) > 2:
+		option = argv[2]
 
-if option == "random":
-	#Random shuffle run
-	split = 0.8
-	if len(sys.argv) == 4:
-		split = float(sys.argv[3])
+	if option == "random":
+		#Random shuffle run
+		split = 0.8
+		if len(argv) == 4:
+			split = float(argv[3])
 
-	data = read_data(training_file)
-	X_train, y_train, X_test, y_test = split_train_test(data, split)
-	class_prob, class_feature_value_count = train(X_train, y_train)
-	store(class_prob, class_feature_value_count)
-	accuracy = predict(X_test, y_test, class_prob, class_feature_value_count)
-	print "\n"
-	print "\n"
-	print "Random test-train split. Training ratio = "+str(split)+"."
-	print "\n"
-	print "Accuracy = "+str(accuracy)+" %."
-	print "\n"
+		data = read_data(training_file)
+		X_train, y_train, X_test, y_test = split_train_test(data, split)
+		class_prob, class_feature_value_count = train(X_train, y_train)
+		store(class_prob, class_feature_value_count)
+		accuracy = predict(X_test, y_test, class_prob, class_feature_value_count)
+		print "\n"
+		print "Random test-train split. Training ratio = "+str(split)+"."
+		print "\n"
+		print "Accuracy = "+str(accuracy)+" %."
+		print "\n"
 
-elif option == "cv":
-	k = 5
-	if len(sys.argv) == 3:
-		k = int(sys.argv[2])
+	elif option == "cv":
+		k = 5
+		if len(argv) == 3:
+			k = int(argv[2])
 
-	kf = KFold(n_splits=k)
-	data = read_data(training_file)
-	np.random.shuffle(data)
-	X = data[:,:-1]
-	y = data[:,-1]
-	accuracy = 0.0
-	for train_idx, test_idx in kf.split(data):
-		class_prob, class_feature_value_count = train(X[train_idx],y[train_idx])
-		accuracy += predict(X[test_idx], y[test_idx], class_prob, class_feature_value_count)
-	print "\n"
-	print "\n"
-	print "Cross-validated. Folds = "+str(k)+"."
-	print "Average Accuracy over different folds = "+str(accuracy/k)
-	print "\n"
+		kf = KFold(n_splits=k)
+		data = read_data(training_file)
+		np.random.shuffle(data)
+		X = data[:,:-1]
+		y = data[:,-1]
+		accuracy = 0.0
+		for train_idx, test_idx in kf.split(data):
+			class_prob, class_feature_value_count = train(X[train_idx],y[train_idx])
+			accuracy += predict(X[test_idx], y[test_idx], class_prob, class_feature_value_count)
+		print "Cross-validated. Folds = "+str(k)+"."
+		print "Average Accuracy over different folds = "+str(accuracy/k)
 
-else:
-	print "Illegal options set. Use either 'random' or 'cv'"
+	else:
+		print "Illegal options set. Use either 'random' or 'cv'"
 
+
+if __name__ == '__main__':
+	main(sys.argv)
