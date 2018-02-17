@@ -12,9 +12,16 @@ def read_data(filename):
     data = np.array(map(lambda x: x.strip().split(","), open(filename).readlines()[1:]))
     return data
 
-def filter_features(data, features_index):
-	return data[:,features_index]
+def validate_features(datashape, features_index):
+	cols = datashape[1]
+	return reduce(lambda check1, check2: check1 and check2 ,map(lambda index: index < cols, features_index))
 
+def filter_features(data, features_index):
+	if validate_features(data.shape, features_index):
+		return data[:,features_index]
+
+	print "Unable to filter features as the indices are out of bounds"
+	return data
 
 def split_train_test(data, ratio_train=0.8):
 	np.random.shuffle(data)
@@ -90,6 +97,8 @@ def main(argv):
 			split = float(argv[3])
 
 		data = read_data(training_file)
+		# Uncomment the following line to filter features.
+		# data = filter_features(data, [0,1,2,3,4,6,7,8,9,10,14,16, 5000])
 		X_train, y_train, X_test, y_test = split_train_test(data, split)
 		class_prob, class_feature_value_count = train(X_train, y_train)
 		store(class_prob, class_feature_value_count)
