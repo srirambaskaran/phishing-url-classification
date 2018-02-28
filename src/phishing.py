@@ -5,6 +5,8 @@ import math
 from collections import defaultdict
 from sklearn.model_selection import KFold
 
+import feature_selection as fs
+
 # Simple elegant method for phishing url classification.
 # Uses Naive Bayes method.
 
@@ -105,7 +107,8 @@ def main(argv):
 
 		data = read_data(training_file)
 		# Uncomment the following line to filter features.
-		data = filter_features(data, [0,1,2,3,4,6,7,8,9,10,14,16])
+
+		data = filter_features(data, fs.select_features(data, {"method":"info_gain","num_features":14}))
 		X_train, y_train, X_test, y_test = split_train_test(data, split)
 		class_prob, class_feature_value_count = train(X_train, y_train)
 		store(class_prob, class_feature_value_count)
@@ -123,6 +126,7 @@ def main(argv):
 
 		kf = KFold(n_splits=k)
 		data = read_data(training_file)
+		data = filter_features(data, fs.select_features(data, {"method":"info_gain","num_features":25}))
 		np.random.shuffle(data)
 		X = data[:,:-1]
 		y = data[:,-1]
