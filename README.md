@@ -29,9 +29,13 @@ Dataset: [https://archive.ics.uci.edu/ml/datasets/phishing+websites](https://arc
 
 I have cleaned the `.arff` file to a `.txt` format for easy processing in python.
 
+## Feature selection
+An simple algorithm for feature selection has been implemented. The feature selection is based on infomration gain. Since all features in the chosen dataset are categorical or discrete, it is better to use a information theoretic approach to avoid information loss due to kernel estimation of probability destribution.
+
 ## Environment
 
 The algorithm has been coded in Python 2. Dependencies are common ML packages such as `numpy` and `sklearn`.
+
 
 ## Implementation
 
